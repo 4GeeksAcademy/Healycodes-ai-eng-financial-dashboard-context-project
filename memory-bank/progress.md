@@ -27,11 +27,10 @@ _Last verified: 2026-09-29, on the commit that added this file._
 | No CI | no `.github/` | Tests only run if someone runs them |
 | Python deps unpinned; debugpy + `--reload` always on; CORS `*` with credentials | `requirements.txt`, `backend/Dockerfile`, `main.py` | Fine for a mock, not production-ready |
 | Build warns about a >500 kB chunk | `npm run build` | No observed user impact |
-| `docker compose up --build` not verified end-to-end by the agent | sandbox TLS proxy blocked `pip install` in the image | Re-check in Codespaces |
 
 ## Next priorities (derived from the gaps above, not a product roadmap)
 
-1. Confirm `docker compose up --build` in Codespaces and record the result in `verification.md`.
+1. ~~Confirm `docker compose up --build`~~ — done, verified in Codespaces.
 2. Derive the header period from the data and delete `mock-data.ts`.
 3. Translate the error banner to English.
 4. Add a CI workflow running backend pytest and frontend lint/test (both timezones)/build.
