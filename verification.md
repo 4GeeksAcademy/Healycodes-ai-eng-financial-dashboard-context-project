@@ -12,7 +12,7 @@ Every check below was run on a fresh clone of `4GeeksAcademy/ai-eng-financial-da
 
 The repo's only documented setup is `docker compose up --build` (`README.md` → "How to run locally", `docker-compose.yml`).
 
-- ❓ **`docker compose up --build`** — could not complete in the agent's sandbox: `pip install` inside the backend image failed with `CERTIFICATE_VERIFY_FAILED` because of the sandbox's TLS-intercepting proxy. This is an environment limitation, not a repo defect; it must be re-checked in Codespaces.
+- ✅ **`docker compose up --build`** — verified in Codespaces: frontend on 5173 shows the dashboard, `GET :8000/health` returns `{"status":"ok"}`. (It failed only in the agent sandbox because of a TLS proxy.)
 - ✅ **Workaround, same commands as the Dockerfiles** — ran each service with its Dockerfile `CMD`:
   - backend: `python -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload` (from `backend/Dockerfile`)
   - frontend: `npm run dev -- --host 0.0.0.0 --port 5173` (from `frontend/Dockerfile`)
@@ -52,7 +52,7 @@ The repo's only documented setup is `docker compose up --build` (`README.md` →
 
 ### Not verified (❓)
 
-- `docker compose up --build` end-to-end (sandbox TLS proxy — re-check in Codespaces).
+- ~~`docker compose up --build` end-to-end~~ — now verified in Codespaces (see Phase 1).
 - The debugger on port 5678 (debugpy starts — it is in the running command line — but no IDE was attached).
 
 ---
