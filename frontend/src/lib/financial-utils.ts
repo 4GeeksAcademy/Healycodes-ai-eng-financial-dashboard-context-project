@@ -4,8 +4,11 @@ import {
   type MonthlyDataPoint,
 } from "./financial-types";
 
-function toYearMonthKey(value: Date): string {
-  return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}`;
+// API dates are calendar dates ("YYYY-MM-DD"). Read the year-month from the
+// string instead of new Date(), which parses them as UTC midnight and shifts
+// the 1st of a month into the previous month west of UTC.
+function toYearMonthKey(isoDate: string): string {
+  return isoDate.slice(0, 7);
 }
 
 function formatMonthYearLabel(yearMonthKey: string): string {
@@ -39,7 +42,7 @@ export function computeMonthlyData(
   const monthlyMap: Record<string, { income: number; outcome: number }> = {};
 
   for (const m of movements) {
-    const yearMonthKey = toYearMonthKey(new Date(m.create_date));
+    const yearMonthKey = toYearMonthKey(m.create_date);
     if (!monthlyMap[yearMonthKey]) {
       monthlyMap[yearMonthKey] = { income: 0, outcome: 0 };
     }

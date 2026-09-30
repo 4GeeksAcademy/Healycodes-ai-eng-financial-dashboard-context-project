@@ -155,9 +155,15 @@ def test_top_categories_returns_limited_sorted_categories():
 
 
 def test_metrics_comparison_returns_delta_fields():
+    # Data is the last 12 months relative to today, so derive the range from
+    # the data instead of hard-coding dates (.agents/rules/dates-and-time.md).
+    facets = client.get("/api/metrics/facets").json()
+    max_date = date.fromisoformat(facets["max_date"])
+    start_date = max_date.replace(day=1)
+
     response = client.get(
         "/api/metrics/comparison",
-        params={"start_date": "2025-03-01", "end_date": "2025-03-31"},
+        params={"start_date": start_date.isoformat(), "end_date": max_date.isoformat()},
     )
 
     assert response.status_code == 200
@@ -168,6 +174,12 @@ def test_metrics_comparison_returns_delta_fields():
         "delta_abs",
         "delta_pct",
     }
+    # Both windows fall inside the data, so neither net value can be empty.
+    assert payload["current_period"] != 0
+    assert payload["previous_period"] != 0
+    assert payload["delta_abs"] == round(
+        payload["current_period"] - payload["previous_period"], 2
+    )
 
 
 def test_metrics_alerts_returns_anomaly_candidates():

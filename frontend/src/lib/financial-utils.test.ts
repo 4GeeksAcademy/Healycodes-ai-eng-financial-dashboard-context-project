@@ -101,6 +101,35 @@ describe("computeMonthlyData", () => {
       profitPercent: 100,
     });
   });
+
+  it("keeps first-of-month movements in their own month in any timezone", () => {
+    // API dates are calendar dates ("YYYY-MM-DD"). Parsing them with
+    // new Date() treats them as UTC midnight, which is the previous day
+    // west of UTC (see .agents/rules/dates-and-time.md).
+    const firstOfMonth: FinancialMovement[] = [
+      {
+        create_date: "2025-03-01",
+        amount: 400,
+        operation_type: "income",
+        category: "sales",
+        business_type: "B2B",
+      },
+      {
+        create_date: "2025-02-28",
+        amount: 100,
+        operation_type: "income",
+        category: "sales",
+        business_type: "B2C",
+      },
+    ];
+
+    const monthlyData = computeMonthlyData(firstOfMonth);
+
+    expect(monthlyData.map((point) => [point.month, point.income])).toEqual([
+      ["Feb 2025", 100],
+      ["Mar 2025", 400],
+    ]);
+  });
 });
 
 describe("formatters", () => {
